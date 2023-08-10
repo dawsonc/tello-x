@@ -1,24 +1,32 @@
 """
-Sample project setup file.
+Setup file for tello-x.
 """
-from setuptools import setup, find_packages
-
+from setuptools import find_packages, setup
 
 setup(
-    name="sample-project-MichaelCurrin",
-    version="1.1.0", # Change to 0.0.1 for new projects.
-    author="Michael Currin",
-    author_email="",
-    description="A sample Python package project",
+    name="tellox",
+    version="0.0.1",
+    author="Charles Dawson",
+    author_email="cbd@mit.edu",
+    description="The easy way to control a DJI Tello drone.",
     long_description=open("README.md").read(),
     long_description_content_type="text/markdown",
     license="MIT",
-    url="https://github.com/MichaelCurrin/python-package-quickstart",
-    packages=find_packages(),
+    url="https://github.com/dawsonc/tello-x",
     classifiers=[
         "Programming Language :: Python :: 3",
         "License :: OSI Approved :: MIT License",
         "Operating System :: OS Independent",
+        "Topic :: System :: Hardware",
+        "Framework :: Robot Framework :: Library",
+    ],
+    packages=["tellox"],
+    install_requires=[
+        "numpy",
+        "opencv-python",
+        "pandas",
+        "djitellopy",
+        "dt-apriltags",
     ],
     python_requires=">=3.6",
 )

@@ -1,8 +1,0 @@
-{
-    "terminal.integrated.cwd": "sampleproject",
-    "code-runner.cwd": "sampleproject",
-
-    "python.pythonPath": "venv/bin/python",
-
-    "editor.rulers": [79]
-}
