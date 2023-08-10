@@ -4,8 +4,17 @@ from dataclasses import dataclass
 import cv2
 import numpy as np
 import numpy.typing as npt
-from djitellopy import BackgroundFrameRead, Tello
 from dt_apriltags import Detection, Detector
+
+# Funky stuff alert! Due to a conflict between opencv and av (a dependency in
+# dji-tellopy), we need to import cv2 and create a window before importing
+# dji-tellopy. See https://github.com/PyAV-Org/PyAV/issues/1050
+
+cv2.namedWindow("Starting tellox...")
+cv2.waitKey(1)
+cv2.destroyAllWindows()
+
+from djitellopy import BackgroundFrameRead, Tello  # noqa: E402
 
 
 @dataclass
@@ -67,6 +76,7 @@ class Pilot:
         # Drone initialization
         self._tello_interface = Tello()
         self._tello_interface.connect()
+        self._tello_interface.streamon()
         self._frame_reader = self._tello_interface.get_frame_read()
 
         # AprilTag initialization
@@ -77,6 +87,7 @@ class Pilot:
         self._visualize = visualize
         if self._visualize:
             cv2.namedWindow(self._window_name)
+            cv2.waitKey(1)
 
     def takeoff(self):
         """Take off."""
@@ -108,14 +119,11 @@ class Pilot:
             int(yaw_velocity),
         )
 
-    def get_sensor_readings(self) -> dict:
+    def get_sensor_readings(self) -> SensorReading:
         """Get the current sensor readings from the drone.
 
         Returns:
-            A dictionary of sensor readings with the following keys
-                - acceleration: acceleration in the body frame (x, y, z); m/s^2
-                - velocity: velocity in the body frame (x, y, z); m/s
-                - attitude: attitude in the body frame (roll, pitch, yaw); deg
+            A SensorReading object with the current sensor readings.
 
         """
         # Units are specified in https://dl-cdn.ryzerobotics.com/downloads/tello/20180910/Tello%20SDK%20Documentation%20EN_1.3.pdf  # noqa: E501
