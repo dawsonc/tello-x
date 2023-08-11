@@ -24,4 +24,4 @@ The camera frame is defined with `z` pointing out of the camera and `x` pointing
 
 ## License
 
-Released under [MIT](/LICENSE) by [Charles Dawson](https://github.com/dawsonc).
+Released under the [MIT License](/LICENSE) by [Charles Dawson](https://github.com/dawsonc).
