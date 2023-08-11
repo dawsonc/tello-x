@@ -17,6 +17,16 @@
 
 That's it! Connect to your Tello over WiFi and try some of the [examples](https://github.com/dawsonc/tello-x/scripts).
 
+For a minimal example:
+```
+import time
+import tellox as tx
+
+pilot = tx.Pilot()
+pilot.takeoff()
+pilot.land()
+```
+
 ## A note on coordinate frames
 
 The Tello's body frame is defined North-East-Down (a standard for aircraft), so `x` points forward (out of the camera), `y` points to the right of the drone, and `z` points down.
