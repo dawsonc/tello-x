@@ -54,7 +54,7 @@ class Pilot:
         apriltag_size: float = 0.1,
         apriltag_family: str = "tag36h11",
         visualize: bool = False,
-        log_level: str = logging.WARN,
+        log_level: int = logging.WARN,
     ):
         """
         Initialize the Tello drone interface and connect to the drone.

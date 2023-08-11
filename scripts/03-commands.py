@@ -40,29 +40,35 @@ for t in np.arange(0, flight_time, 1 / framerate):
 pilot.land()
 
 # Convert the controls and readings to numpy arrays and plot them
-readings = tx.aggregate_sensor_readings(readings)
-controls = np.array(controls)
+readings_dict = tx.aggregate_sensor_readings(readings)
+controls_np = np.array(controls)
 plt.plot(
-    readings["flight_time"],
-    readings["acceleration"][:, 0],
+    readings_dict["flight_time"],
+    readings_dict["acceleration"][:, 0],
     linestyle="-",
     label="x",
 )
 plt.plot(
-    readings["flight_time"],
-    readings["acceleration"][:, 1],
+    readings_dict["flight_time"],
+    readings_dict["acceleration"][:, 1],
     linestyle="-",
     label="y",
 )
 plt.plot(
-    readings["flight_time"],
-    readings["acceleration"][:, 2],
+    readings_dict["flight_time"],
+    readings_dict["acceleration"][:, 2],
     linestyle="-",
     label="z",
 )
-plt.plot(readings["flight_time"], controls[:, 0], linestyle="--", label="vx")
-plt.plot(readings["flight_time"], controls[:, 1], linestyle="--", label="vy")
-plt.plot(readings["flight_time"], controls[:, 2], linestyle="--", label="vz")
+plt.plot(
+    readings_dict["flight_time"], controls_np[:, 0], linestyle="--", label="vx"
+)
+plt.plot(
+    readings_dict["flight_time"], controls_np[:, 1], linestyle="--", label="vy"
+)
+plt.plot(
+    readings_dict["flight_time"], controls_np[:, 2], linestyle="--", label="vz"
+)
 plt.xlabel("Time (s)")
 plt.ylabel("Acceleration (m/s^2)")
 plt.legend()

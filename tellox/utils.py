@@ -52,22 +52,22 @@ def aggregate_sensor_readings(
         battery_readings.append(reading.battery)
 
     # Convert everything to numpy arrays
-    flight_time_readings = np.array(flight_time_readings)
-    acceleration_readings = np.array(acceleration_readings)
-    velocity_readings = np.array(velocity_readings)
-    attitude_readings = np.array(attitude_readings)
-    height_readings = np.array(height_readings)
-    tof_distance_readings = np.array(tof_distance_readings)
-    baro_readings = np.array(baro_readings)
-    battery_readings = np.array(battery_readings)
+    flight_time_readings_np = np.array(flight_time_readings)
+    acceleration_readings_np = np.array(acceleration_readings)
+    velocity_readings_np = np.array(velocity_readings)
+    attitude_readings_np = np.array(attitude_readings)
+    height_readings_np = np.array(height_readings)
+    tof_distance_readings_np = np.array(tof_distance_readings)
+    baro_readings_np = np.array(baro_readings)
+    battery_readings_np = np.array(battery_readings)
 
     return {
-        "flight_time": flight_time_readings,
-        "acceleration": acceleration_readings,
-        "velocity": velocity_readings,
-        "attitude": attitude_readings,
-        "height": height_readings,
-        "tof_distance": tof_distance_readings,
-        "baro": baro_readings,
-        "battery": battery_readings,
+        "flight_time": flight_time_readings_np,
+        "acceleration": acceleration_readings_np,
+        "velocity": velocity_readings_np,
+        "attitude": attitude_readings_np,
+        "height": height_readings_np,
+        "tof_distance": tof_distance_readings_np,
+        "baro": baro_readings_np,
+        "battery": battery_readings_np,
     }

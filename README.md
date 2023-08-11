@@ -12,7 +12,7 @@
 
 ## Installation
 
-`pip install tellox`
+`pip install tello-x`
 
 That's it! Connect to your Tello over WiFi and try some of the [examples](https://github.com/dawsonc/tello-x/scripts).
 

@@ -18,13 +18,13 @@ for _ in range(int(flight_time * framerate)):
 print("Done with measurements!")
 
 # Convert the readings to numpy arrays and plot them
-readings = tx.aggregate_sensor_readings(readings)
+readings_dict = tx.aggregate_sensor_readings(readings)
 # Since we didn't actually fly, readings["flight_time"] will be zero (that
 # measures the time since the motors turned on), so we can just plot with
 # a generic time axis
-plt.plot(readings["acceleration"][:, 0], label="x")
-plt.plot(readings["acceleration"][:, 1], label="y")
-plt.plot(readings["acceleration"][:, 2], label="z")
+plt.plot(readings_dict["acceleration"][:, 0], label="x")
+plt.plot(readings_dict["acceleration"][:, 1], label="y")
+plt.plot(readings_dict["acceleration"][:, 2], label="z")
 plt.xlabel("Measurement #")
 plt.ylabel("Acceleration (m/s^2)")
 plt.legend()
