@@ -1,10 +1,13 @@
 """Define the main interface for tellox"""
-from dataclasses import dataclass
+import logging
+import time
 
 import cv2
 import numpy as np
 import numpy.typing as npt
 from dt_apriltags import Detection, Detector
+
+from .utils import SensorReading
 
 # Funky stuff alert! Due to a conflict between opencv and av (a dependency in
 # dji-tellopy), we need to import cv2 and create a window before importing
@@ -17,18 +20,6 @@ cv2.destroyAllWindows()
 from djitellopy import BackgroundFrameRead, Tello  # noqa: E402
 
 
-@dataclass
-class SensorReading:
-    flight_time: float
-    acceleration: npt.NDArray[np.float64]
-    velocity: npt.NDArray[np.float64]
-    attitude: npt.NDArray[np.float64]
-    height: float
-    tof_distance: float
-    baro: float
-    battery: float
-
-
 class Pilot:
     """Python interface for the Tello drone.
 
@@ -36,6 +27,9 @@ class Pilot:
     library with additional functionality for controlling the drone, logging
     sensor readings, and using the camera.
     """
+
+    # Track the time since the last takeoff for logging purposes
+    last_takeoff_time: float
 
     # Attributes for interfacing with the tello
     _tello_interface: Tello
@@ -60,6 +54,7 @@ class Pilot:
         apriltag_size: float = 0.1,
         apriltag_family: str = "tag36h11",
         visualize: bool = False,
+        log_level: str = logging.WARN,
     ):
         """
         Initialize the Tello drone interface and connect to the drone.
@@ -72,8 +67,11 @@ class Pilot:
                 multiple families separated by a space.
             visualize: Whether to visualize the camera feed and apriltag
                 detections
+            log_level: set the desired logging level for the Tello driver.
+                e.g. logging.INFO, logging.WARN
         """
         # Drone initialization
+        Tello.LOGGER.setLevel(log_level)
         self._tello_interface = Tello()
         self._tello_interface.connect()
         self._tello_interface.streamon()
@@ -92,15 +90,16 @@ class Pilot:
     def takeoff(self):
         """Take off."""
         self._tello_interface.takeoff()
+        self.last_takeoff_time = time.time()
 
     def land(self):
         """Land."""
         self._tello_interface.land()
 
-    def send_command(
+    def send_control(
         self, xyz_velocity: npt.NDArray[np.float64], yaw_velocity: float
     ):
-        """Send a command to the drone sending the desired velocity.
+        """Send a control command to the drone sending the desired velocity.
 
         Cannot run faster than 1 kHz.
 
@@ -145,7 +144,9 @@ class Pilot:
             [s["pitch"], s["roll"], s["yaw"]], dtype=np.float64
         )
         battery = s["bat"]
-        flight_time = s["time"]
+        # We could get the flight time from the state, but it's only logged
+        # as an INTEGER?!?!?!?! So instead we track it ourselves.
+        flight_time = time.time() - self.last_takeoff_time
 
         return SensorReading(
             flight_time=flight_time,
@@ -188,7 +189,9 @@ class Pilot:
         img = self._frame_reader.frame
 
         if self._visualize:
-            cv2.imshow(self._window_name, img)
+            # Convert from RGB to BGR for visualization with OpenCV
+            img_to_show = cv2.cvtColor(img, cv2.COLOR_RGB2BGR)
+            cv2.imshow(self._window_name, img_to_show)
             cv2.waitKey(1)
 
         return img
@@ -249,12 +252,16 @@ class Pilot:
 
     @property
     def R_drone_camera(self) -> npt.NDArray[np.float64]:
-        """Rotation matrix from the drone body frame to the camera frame."""
+        """Rotation matrix from the drone body frame to the camera frame.
+
+        Drone body frame is North-East-Down.
+        Camera frame is standard, with x to the right, y down, and z forward.
+        """
         return np.array(
             [
                 [0, 0, 1],
-                [-1, 0, 0],
-                [0, -1, 0],
+                [1, 0, 0],
+                [0, 1, 0],
             ],
             dtype=np.float64,
         )

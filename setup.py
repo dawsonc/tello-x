@@ -27,6 +27,7 @@ setup(
         "pandas",
         "djitellopy",
         "dt-apriltags",
+        "matplotlib",
     ],
     python_requires=">=3.6",
 )
