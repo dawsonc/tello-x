@@ -3,6 +3,7 @@
 
 [![GitHub tag](https://img.shields.io/github/tag/dawsonc/tello-x?include_prereleases=&sort=semver)](https://github.com/dawsonc/tello-x/releases/)
 [![License](https://img.shields.io/badge/License-MIT-blue)](#license)
+[![PyPI version](https://badge.fury.io/py/tellox.svg)](https://badge.fury.io/py/tellox)
 
 ## Features
 
