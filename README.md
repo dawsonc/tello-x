@@ -20,7 +20,7 @@ cd path/to/your/project
 python -m venv venv
 
 # Activate the virtual environment (you'll need to do this whenever you start a new shell)
-source venv/bin/activate  # or venv/Scripts/activate in Windows PowerShell
+source venv/bin/activate  # or just `venv/Scripts/activate` in Windows PowerShell
 
 # Install this library
 pip install tellox
