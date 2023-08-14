@@ -8,7 +8,7 @@
 ## Features
 
 - Easily pilot the Tello drone by sending commands and reading sensor data.
-- Built-in support for [AprilTag](https://github.com/duckietown/lib-dt-apriltags) detection.
+- Built-in support for [AprilTag](https://github.com/pupil-labs/apriltags) detection.
 - Built-in data logging
 
 ## Installation

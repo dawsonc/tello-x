@@ -5,7 +5,7 @@ import time
 import cv2
 import numpy as np
 import numpy.typing as npt
-from dt_apriltags import Detection, Detector
+from pupil_apriltags import Detection, Detector
 
 from .utils import SensorReading
 
