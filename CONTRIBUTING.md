@@ -15,7 +15,7 @@ poetry run pre-commit install
 
 ## Code standards
 
-Please make sure that all of the following tools run and pass before contributing a PR. These are also run as pre-commit hooks.
+Please make sure that all of the following tools run and pass before contributing a PR.
 
 ```
 poetry run black .   # auto-format
@@ -25,4 +25,4 @@ poetry run mypy .    # static type checking
 poetry run pytest .  # tests
 ```
 
-Instead of running all of these via `poetry run ...`, you could also run `poetry shell` to launch a shell within the Poetry environment, then run all of the commands individually.
+All of these (except `pytest`) are also run as pre-commit hooks.

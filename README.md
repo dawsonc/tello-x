@@ -13,7 +13,18 @@
 
 ## Installation
 
-`pip install tello-x`
+We recommen installing `tellox` in a virtual environment:
+```
+# Create a virtual environment for your project
+cd path/to/your/project
+python -m venv venv
+
+# Activate the virtual environment (you'll need to do this whenever you start a new shell)
+source venv/bin/activate
+
+# Install this library
+pip install tello-x
+```
 
 That's it! Connect to your Tello over WiFi and try some of the [examples](https://github.com/dawsonc/tello-x/scripts).
 
