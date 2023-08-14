@@ -26,7 +26,7 @@ source venv/bin/activate  # or just `venv/Scripts/activate` in Windows PowerShel
 pip install tellox
 ```
 
-That's it! Connect to your Tello over WiFi and try some of the [examples](https://github.com/dawsonc/tello-x/scripts).
+That's it! Connect to your Tello over WiFi and try some of the [examples](https://github.com/dawsonc/tello-x/tree/master/scripts).
 
 For a minimal example:
 ```
@@ -49,4 +49,4 @@ Released under the [MIT License](/LICENSE) by [Charles Dawson](https://github.co
 
 ## Contributing
 
-If you find a bug or would like to contribute a feature, that's awesome! Please file an [issue](https://github.com/dawsonc/tello-x/issues) and open a [pull request](https://github.com/dawsonc/tello-x/issues). More details on contribution can be found in the [`CONTRIBUTING.md`](https://github.com/dawsonc/tello-x/blob/master/CONTRIBUTING.md) file.
+If you find a bug or would like to contribute a feature, that's awesome! Please file an [issue](https://github.com/dawsonc/tello-x/issues) and open a [pull request](https://github.com/dawsonc/tello-x/pulls). More details on contribution can be found in the [`CONTRIBUTING.md`](https://github.com/dawsonc/tello-x/blob/master/CONTRIBUTING.md) file.
