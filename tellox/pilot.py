@@ -1,6 +1,7 @@
 """Define the main interface for tellox"""
 import logging
 import time
+from typing import Optional
 
 import cv2
 import numpy as np
@@ -180,15 +181,21 @@ class Pilot:
         else:
             self._tello_interface.set_video_direction(Tello.CAMERA_DOWNWARD)
 
-    def get_camera_frame(self) -> npt.NDArray[np.uint8]:
+    def get_camera_frame(
+        self, visualize: Optional[bool] = None
+    ) -> npt.NDArray[np.uint8]:
         """Get the current frame from the camera.
+
+        Args:
+            visualize: if None, default to self._visualize. Otherwise, override
+                the pilot-level visualization setting.
 
         Returns:
             The current frame from the camera.
         """
         img = self._frame_reader.frame
 
-        if self._visualize:
+        if visualize if visualize is not None else self._visualize:
             # Convert from RGB to BGR for visualization with OpenCV
             img_to_show = cv2.cvtColor(img, cv2.COLOR_RGB2BGR)
             cv2.imshow(self._window_name, img_to_show)
@@ -196,11 +203,13 @@ class Pilot:
 
         return img
 
-    def detect_tags(self, img: npt.NDArray[np.uint8]) -> list[Detection]:
+    def detect_tags(
+        self, img: npt.NDArray[np.uint8], visualize: Optional[bool] = None
+    ) -> list[Detection]:
         """
         Detect apriltags in an image.
 
-        See https://github.com/duckietown/lib-dt-apriltags for documentation
+        See https://github.com/pupil-labs/apriltags for documentation
         on the AprilTag detector. The pose of the tag is returned in the
         camera frame, with tag.pose_R containing the rotation matrix from the
         camera frame to the tag frame, and tag.pose_t containing the position
@@ -212,47 +221,63 @@ class Pilot:
 
         Args:
             img: The image to detect apriltags in.
+            visualize: if None, default to self._visualize. Otherwise, override
+                the pilot-level visualization setting.
 
         Returns:
             A list of dt_apriltags.Detection objects (empty if no tags were
             detected).
         """
+        # If the image is in RGB, convert to grayscale
+        img_gray = cv2.cvtColor(img, cv2.COLOR_RGB2GRAY)
+
         tags = self._apriltag_detector.detect(
-            img,
+            img_gray,
             estimate_tag_pose=True,
             camera_params=self._camera_parameters,
             tag_size=self._tag_size,
         )
 
         # Visualize if requested
-        if self._visualize:
+        if visualize if visualize is not None else self._visualize:
             # Copy the image so we can draw on it
-            img = img.copy()
+            img_to_show = cv2.cvtColor(img, cv2.COLOR_RGB2BGR)
 
             # Draw the april tag centers and tag IDs
             for tag in tags:
                 cv2.circle(
-                    img,
+                    img_to_show,
                     (int(tag.center[0]), int(tag.center[1])),
                     3,
                     (0, 0, 255),
                     -1,
                 )
+
+                tag_pose_drone = self.convert_to_drone_frame(tag.pose_t)
                 cv2.putText(
-                    img,
-                    str(tag.tag_id),
-                    (int(tag.center[0]), int(tag.center[1])),
+                    img_to_show,
+                    (
+                        f"ID {tag.tag_id}: "
+                        f"[{tag_pose_drone[0, 0].round(2)}, "
+                        f"{tag_pose_drone[1, 0].round(2)}, "
+                        f"{tag_pose_drone[2, 0].round(2)}]"
+                    ),
+                    (int(tag.center[0]) + 5, int(tag.center[1]) - 5),
                     cv2.FONT_HERSHEY_SIMPLEX,
                     0.5,
                     (0, 0, 255),
                     2,
                 )
 
+            cv2.imshow(self._window_name, img_to_show)
+            cv2.waitKey(1)
+
         return tags
 
     @property
     def R_drone_camera(self) -> npt.NDArray[np.float64]:
-        """Rotation matrix from the drone body frame to the camera frame.
+        """
+        Rotation matrix from the drone body frame to the camera frame.
 
         Drone body frame is North-East-Down.
         Camera frame is standard, with x to the right, y down, and z forward.
@@ -269,7 +294,8 @@ class Pilot:
     def convert_to_drone_frame(
         self, xyz: npt.NDArray[np.float64]
     ) -> npt.NDArray[np.float64]:
-        """Convert a vector from the camera frame to the drone body frame.
+        """
+        Convert a vector from the camera frame to the drone body frame.
 
         Args:
             xyz: A vector in the camera frame.
