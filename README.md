@@ -23,7 +23,7 @@ python -m venv venv
 source venv/bin/activate
 
 # Install this library
-pip install tello-x
+pip install tellox
 ```
 
 That's it! Connect to your Tello over WiFi and try some of the [examples](https://github.com/dawsonc/tello-x/scripts).
