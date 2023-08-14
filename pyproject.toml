@@ -1,34 +1,40 @@
-[build-system]
-requires      = ["setuptools>=61.0.0", "wheel"]
-build-backend = "setuptools.build_meta"
-
-[project]
+[tool.poetry]
 name = "tellox"
-version = "0.0.1"
+version = "0.1.0"
 description = "The easy way to control a DJI Tello drone."
 readme = "README.md"
-authors = [{ name = "Charles Dawson", email = "charles.dwsn@gmail.com" }]
-license = { file = "LICENSE" }
+authors = ["Charles Dawson <charles.dwsn@gmail.com>"]
+packages = [{include = "tellox"}]
+keywords = ["tello", "drone", "dji", "robotics", "control"]
 classifiers = [
-    "Programming Language :: Python :: 3",
-    "License :: OSI Approved :: MIT License",
-    "Operating System :: OS Independent",
     "Topic :: System :: Hardware",
     "Framework :: Robot Framework :: Library",
 ]
-keywords = ["tello", "drone", "dji", "robotics", "control"]
-dependencies = [
-    "numpy",
-    "opencv-python",
-    "pandas",
-    "djitellopy",
-    "dt-apriltags",
-    "matplotlib",
-]
-requires-python = ">=3.9"
+license = "MIT"
 
-[project.optional-dependencies]
-dev = ["black", "flake8", "isort", "mypy", "pip-tools"]
+[tool.poetry.dependencies]
+python = "^3.9"
+numpy = "^1.25.2"
+opencv-python = "^4.8.0.76"
+pandas = "^2.0.3"
+matplotlib = "^3.7.2"
+djitellopy = "^2.5.0"
+pupil-apriltags = "^1.0.4.post10"
+
+[tool.poetry.group.dev]
+optional = true
+
+[tool.poetry.group.dev.dependencies]
+black = "^23.7.0"
+flake8 = "^6.1.0"
+isort = "^5.12.0"
+mypy = "^1.5.0"
+pytest = "^7.4.0"
+pre-commit = "^3.3.3"
 
 [project.urls]
 Homepage = "https://github.com/dawsonc/tello-x"
+
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"

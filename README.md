@@ -35,3 +35,7 @@ The camera frame is defined with `z` pointing out of the camera and `x` pointing
 ## License
 
 Released under the [MIT License](/LICENSE) by [Charles Dawson](https://github.com/dawsonc).
+
+## Contributing
+
+If you find a bug or would like to contribute a feature, that's awesome! Please file an [issue](https://github.com/dawsonc/tello-x/issues) and open a [pull request](https://github.com/dawsonc/tello-x/issues). More details on contribution can be found in the [`CONTRIBUTING.md`](https://github.com/dawsonc/tello-x/blob/master/CONTRIBUTING.md) file.
