@@ -269,7 +269,7 @@ class Pilot:
 
         return tags
 
-    def get_drone_pose_in_tag_frame(
+    def get_drone_pose(
         self, tag: Detection
     ) -> tuple[npt.NDArray[np.float64], R, npt.NDArray[np.float64]]:
         """
