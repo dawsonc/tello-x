@@ -254,15 +254,9 @@ class Pilot:
                     -1,
                 )
 
-                tag_pose_drone = self.convert_to_drone_frame(tag.pose_t)
                 cv2.putText(
                     img_to_show,
-                    (
-                        f"ID {tag.tag_id}: "
-                        f"[{tag_pose_drone[0, 0].round(2)}, "
-                        f"{tag_pose_drone[1, 0].round(2)}, "
-                        f"{tag_pose_drone[2, 0].round(2)}]"
-                    ),
+                    (f"ID {tag.tag_id}"),
                     (int(tag.center[0]) + 5, int(tag.center[1]) - 5),
                     cv2.FONT_HERSHEY_SIMPLEX,
                     0.5,
@@ -279,17 +273,16 @@ class Pilot:
         self, tag: Detection
     ) -> tuple[npt.NDArray[np.float64], R, npt.NDArray[np.float64]]:
         """
-        Get the pose (position and rotation) of the drone in the tag frame.
+        Get the pose (position and rotation) of the drone in the global frame.
 
-        These are defined in the tag frame, which has x pointing to the right,
-        y down, and z into the tag.
+        These are defined in the global frame, which is north-east-down.
 
         Args:
             The detection object for the tag
 
         Returns:
-            The (x, y, z) position of the drone in the tag frame
-            The rotation object of the drone camera measured in the tag frame
+            The (x, y, z) position of the drone in the global frame
+            The rotation of the drone camera measured in the global frame
             The roll, pitch, and yaw of the drone in radians.
         """
         # Do some spatial algebra
@@ -304,10 +297,20 @@ class Pilot:
         # Vector from tag to camera in tag frame
         p_tag_cam_tag = R_tag_cam.apply(p_tag_cam_cam)
 
-        # ZXY gives roll, pitch, and yaw as intuitively defined for the drone
-        euler_angles = R_tag_cam.as_euler("ZXY")
+        # We want to express the position and orientation of the drone in the
+        # global frame, which is defined as north-east-down (NED).
+        R_drone_cam = R.from_matrix(self.R_drone_camera)
+        R_global_tag = R_drone_cam  # NED->tag is same as drone->cam
+        R_cam_drone = R_drone_cam.inv()
+        R_global_drone = R_global_tag * R_tag_cam * R_cam_drone
+        p_global_cam_global = R_global_tag.apply(p_tag_cam_tag)
+        # no translation from from camera to drone
+        p_global_drone_global = p_global_cam_global
 
-        return p_tag_cam_tag, R_tag_cam, euler_angles
+        # Convert to euler angles
+        euler_angles = R_global_drone.as_euler("XYZ")
+
+        return p_global_drone_global, R_global_drone, euler_angles
 
     @property
     def R_drone_camera(self) -> npt.NDArray[np.float64]:
