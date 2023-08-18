@@ -14,4 +14,12 @@ while True:
     # Detect apriltags in the image
     tags = pilot.detect_tags(img, visualize=True)
 
+    # Get the euler angles of the detected tags
+    if tags:
+        for tag in tags:
+            position, _, euler_angles = pilot.get_drone_pose_in_tag_frame(tag)
+            print("Tag ID: {}".format(tag.tag_id))
+            print("Drone position in tag frame: {}".format(position))
+            print("Roll, pitch, yaw: {}".format(euler_angles))
+
     sleep(1 / framerate)

@@ -20,6 +20,7 @@ pandas = "^2.0.3"
 matplotlib = "^3.7.2"
 djitellopy = "^2.5.0"
 pupil-apriltags = "^1.0.4.post10"
+scipy = "^1.11.2"
 
 [tool.poetry.group.dev]
 optional = true

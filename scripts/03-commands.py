@@ -3,6 +3,7 @@ from time import perf_counter, sleep
 
 import matplotlib.pyplot as plt
 import numpy as np
+
 import tellox as tx
 
 # Make a pilot object and take off

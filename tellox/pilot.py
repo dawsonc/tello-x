@@ -7,6 +7,7 @@ import cv2
 import numpy as np
 import numpy.typing as npt
 from pupil_apriltags import Detection, Detector
+from scipy.spatial.transform import Rotation as R
 
 from .utils import SensorReading
 
@@ -274,10 +275,44 @@ class Pilot:
 
         return tags
 
+    def get_drone_pose_in_tag_frame(
+        self, tag: Detection
+    ) -> tuple[npt.NDArray[np.float64], R, npt.NDArray[np.float64]]:
+        """
+        Get the pose (position and rotation) of the drone in the tag frame.
+
+        These are defined in the tag frame, which has x pointing to the right,
+        y down, and z into the tag.
+
+        Args:
+            The detection object for the tag
+
+        Returns:
+            The (x, y, z) position of the drone in the tag frame
+            The rotation object of the drone camera measured in the tag frame
+            The roll, pitch, and yaw of the drone in radians.
+        """
+        # Do some spatial algebra
+        # rotation of tag measured in camera frame
+        R_cam_tag = R.from_matrix(tag.pose_R)
+        # Rotation of camera measured in tag frame
+        R_tag_cam = R_cam_tag.inv()
+        # Vector from camera to tag in camera frame
+        p_cam_tag = tag.pose_t.reshape(-1)
+        # Vector from tag to camera in camera frame
+        p_tag_cam_cam = -p_cam_tag
+        # Vector from tag to camera in tag frame
+        p_tag_cam_tag = R_tag_cam.apply(p_tag_cam_cam)
+
+        # ZXY gives roll, pitch, and yaw as intuitively defined for the drone
+        euler_angles = R_tag_cam.as_euler("ZXY")
+
+        return p_tag_cam_tag, R_tag_cam, euler_angles
+
     @property
     def R_drone_camera(self) -> npt.NDArray[np.float64]:
         """
-        Rotation matrix from the drone body frame to the camera frame.
+        Rotation matrix of the camera frame measured in the drone body frame.
 
         Drone body frame is North-East-Down.
         Camera frame is standard, with x to the right, y down, and z forward.
