@@ -57,6 +57,7 @@ class Pilot:
         apriltag_family: str = "tag36h11",
         visualize: bool = False,
         log_level: int = logging.WARN,
+        apriltag_quad_decimate: int = 4,
     ):
         """
         Initialize the Tello drone interface and connect to the drone.
@@ -71,6 +72,9 @@ class Pilot:
                 detections
             log_level: set the desired logging level for the Tello driver.
                 e.g. logging.INFO, logging.WARN
+            apriltag_quad_decimate: Decimate the image by this factor before
+                detecting apriltags. This can speed up detection at the cost
+                of detection range.
         """
         # Drone initialization
         Tello.LOGGER.setLevel(log_level)
@@ -80,7 +84,9 @@ class Pilot:
         self._frame_reader = self._tello_interface.get_frame_read()
 
         # AprilTag initialization
-        self._apriltag_detector = Detector(families="tag36h11")
+        self._apriltag_detector = Detector(
+            families="tag36h11", quad_decimate=apriltag_quad_decimate
+        )
         self._tag_size = apriltag_size
 
         # Visualization if requested

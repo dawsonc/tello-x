@@ -1,6 +1,6 @@
 [tool.poetry]
 name = "tellox"
-version = "0.2.4"
+version = "0.2.5"
 description = "The easy way to control a DJI Tello drone."
 readme = "README.md"
 authors = ["Charles Dawson <charles.dwsn@gmail.com>"]
