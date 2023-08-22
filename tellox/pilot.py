@@ -119,9 +119,11 @@ class Pilot:
                 Values should be between -100 and 100.
         """
         # Convert to cm/s, which the tello expects
+        # Tello expects commands in order left/right (y), forward/backward (x),
+        # up/down (z).
         self._tello_interface.send_rc_control(
-            int(xyz_velocity[0] * 100),
             int(xyz_velocity[1] * 100),
+            int(xyz_velocity[0] * 100),
             int(xyz_velocity[2] * 100),
             int(yaw_velocity),
         )
