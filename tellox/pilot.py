@@ -95,6 +95,9 @@ class Pilot:
             cv2.namedWindow(self._window_name)
             cv2.waitKey(1)
 
+        # Set last takeoff time to now
+        self.last_takeoff_time = time.time()
+
     def takeoff(self):
         """Take off."""
         self._tello_interface.takeoff()
